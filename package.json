@@ -1,0 +1,67 @@
+{
+  "name": "finance-system-workspace",
+  "version": "1.0.4",
+  "private": true,
+  "description": "Unified launcher for finance system",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "node scripts/startup.js",
+    "start:no-browser": "node scripts/startup.js --no-browser",
+    "start:core": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/start-system.ps1",
+    "start:gui": "powershell -ExecutionPolicy Bypass -File ./scripts/gui-launcher.ps1",
+    "autostart:install": "powershell -ExecutionPolicy Bypass -File ./scripts/install-autostart.ps1",
+    "autostart:remove": "powershell -ExecutionPolicy Bypass -File ./scripts/remove-autostart.ps1",
+    "build:frontend": "npm --prefix frontend run build",
+    "build:backend:deps": "npm --prefix backend install --omit=dev",
+    "dist:win": "npm run build:frontend && npm run build:backend:deps && electron-builder --win --x64"
+  },
+  "devDependencies": {
+    "electron": "^37.1.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.aolong.finance",
+    "productName": "Aolong Finance System",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "backend",
+        "to": "backend",
+        "filter": [
+          "**/*",
+          "!data/**"
+        ]
+      },
+      {
+        "from": "frontend/build",
+        "to": "frontend/build",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "include": "build/installer.nsh"
+    }
+  }
+}

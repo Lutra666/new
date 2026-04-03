@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1890FF" />
+    <meta
+      name="description"
+      content="鳌龙财务管理系统 - 专业版批发零售财务解决方案"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>鳌龙财务管理系统 - 专业版</title>
+    
+    <style>
+      /* Loading 动画 */
+      #root {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      }
+      
+      .loader-container {
+        text-align: center;
+        padding: 40px;
+        border-radius: 16px;
+        background: white;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        backdrop-filter: blur(10px);
+      }
+      
+      .loader {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #e2e8f0;
+        border-top: 5px solid #3b82f6;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      .loader-text {
+        font-size: 16px;
+        color: #4a5568;
+        font-weight: 500;
+        margin-bottom: 8px;
+      }
+      
+      .loader-subtext {
+        font-size: 14px;
+        color: #a0aec0;
+        margin-bottom: 0;
+      }
+      
+      .app-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #1a202c;
+        margin-bottom: 8px;
+      }
+      
+      .app-subtitle {
+        font-size: 14px;
+        color: #718096;
+        margin-bottom: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>您需要启用 JavaScript 才能运行此应用程序。</noscript>
+    <div id="root">
+      <div class="loader-container">
+        <div class="app-title">鳌龙财务管理系统</div>
+        <div class="app-subtitle">专业版 · 批发零售财务解决方案</div>
+        <div class="loader"></div>
+        <div class="loader-text">正在加载系统...</div>
+        <div class="loader-subtext">准备为您提供专业的财务管理服务</div>
+      </div>
+    </div>
+  </body>
+</html>
