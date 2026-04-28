@@ -8,7 +8,7 @@ const compression = require('compression');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
-const jwt = require('jsonwebtoken');
+const { authenticateToken } = require('./middleware/auth');
 const store = require('./data/mockStore');
 
 const app = express();
@@ -93,29 +93,6 @@ app.use(hpp());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.split(' ')[1];
-
-  if (!token) {
-    return res.status(401).json({ error: '访问令牌缺失' });
-  }
-
-  jwt.verify(
-    token,
-    process.env.JWT_SECRET,
-    { algorithms: ['HS256'], issuer: jwtIssuer, audience: jwtAudience },
-    (error, user) => {
-      if (error) {
-        return res.status(403).json({ error: '令牌无效或已过期' });
-      }
-
-      req.user = user;
-      next();
-    }
-  );
-};
 
 app.use((req, res, next) => {
   const shouldAudit = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method);

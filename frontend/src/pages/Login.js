@@ -29,7 +29,7 @@ function Login({ onLogin }) {
   return (
     <div className="auth-shell">
       <div className="auth-intro">
-        <Text style={{ color: '#2b6cb0', fontWeight: 700 }}>进销存 · 资金流 · 客户经营</Text>
+        <Text className="auth-tagline">进销存 · 资金流 · 客户经营</Text>
         <h1 className="auth-title">把业务、资金和决策汇入同一块智能驾驶舱。</h1>
         <p className="auth-subtitle">
           统一看板、统一数据、统一流程。登录后即可进入正式版经营后台，快速处理商品、客户、库存、财务和报表。

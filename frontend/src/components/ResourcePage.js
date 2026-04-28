@@ -237,7 +237,7 @@ function ResourcePage({ resource, title, description, editable = true }) {
           </Space>
         }
       />
-      {error ? <Alert type="error" showIcon message={error} style={{ marginBottom: 16 }} /> : null}
+      {error ? <Alert type="error" showIcon message={error} style={{ marginBottom: 16 }} action={<Button size="small" onClick={() => loadResource(resource)}>重试</Button>} /> : null}
       <Card className="surface-card">
         <div className="table-toolbar">
           <Input.Search
@@ -257,7 +257,7 @@ function ResourcePage({ resource, title, description, editable = true }) {
           dataSource={filteredItems}
           loading={loading}
           pagination={{ pageSize: 8 }}
-          locale={{ emptyText: '暂无数据' }}
+          locale={{ emptyText: `暂无${title}，请点击"新增"添加` }}
           scroll={{ x: true }}
         />
       </Card>

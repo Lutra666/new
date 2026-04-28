@@ -12,28 +12,7 @@ const jwtIssuer = process.env.JWT_ISSUER || 'finance-system';
 const jwtAudience = process.env.JWT_AUDIENCE || 'finance-desktop';
 const allowPublicRegister = process.env.ALLOW_PUBLIC_REGISTER === 'true';
 
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.split(' ')[1];
-
-  if (!token) {
-    return res.status(401).json({ error: '访问令牌缺失' });
-  }
-
-  jwt.verify(
-    token,
-    process.env.JWT_SECRET,
-    { algorithms: ['HS256'], issuer: jwtIssuer, audience: jwtAudience },
-    (error, user) => {
-      if (error) {
-        return res.status(403).json({ error: '令牌无效或已过期' });
-      }
-
-      req.user = user;
-      next();
-    }
-  );
-};
+const { authenticateToken } = require('../middleware/auth');
 
 const sanitizeUser = (user) => {
   if (!user) {

@@ -1,14 +1,9 @@
 const express = require('express');
 const os = require('os');
 const store = require('../data/mockStore');
+const { requireAdmin } = require('../middleware/auth');
 
 const router = express.Router();
-const requireAdmin = (req, res, next) => {
-  if (req.user?.role !== 'admin') {
-    return res.status(403).json({ error: '仅管理员可访问该功能' });
-  }
-  return next();
-};
 
 router.get('/', (req, res) => {
   res.json({

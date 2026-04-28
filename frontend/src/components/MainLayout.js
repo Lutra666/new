@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Layout, Menu, Avatar, Dropdown, Space, Tag, Typography, Button } from 'antd';
 import {
   AppstoreOutlined,
   BarChartOutlined,
+  MoonOutlined,
+  SunOutlined,
   DashboardOutlined,
   DatabaseOutlined,
   FileTextOutlined,
@@ -41,11 +43,12 @@ const developerMenuItems = [
   { key: '/diagnostics', icon: <SafetyCertificateOutlined />, label: '运行诊断' },
 ];
 
-function MainLayout({ children, user, onLogout, developerMode = false }) {
+function MainLayout({ children, user, onLogout, developerMode = false, darkMode = false, onToggleDarkMode }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [collapsed, setCollapsed] = useState(false);
+  const themeBtnRef = useRef(null);
   const visibleMenuItems = developerMode ? [...menuItems, ...developerMenuItems] : menuItems;
 
   useEffect(() => {
@@ -120,12 +123,25 @@ function MainLayout({ children, user, onLogout, developerMode = false }) {
               </Space>
             </Space>
           </div>
-          <Dropdown menu={{ items: dropdownItems }} placement="bottomRight">
-            <Space style={{ cursor: 'pointer' }}>
-              <Avatar icon={<UserOutlined />} />
-              <Text className="main-user-name">{user?.username || '管理员'}</Text>
-            </Space>
-          </Dropdown>
+          <Space size={12}>
+            <Button
+              ref={themeBtnRef}
+              type="text"
+              icon={darkMode ? <SunOutlined style={{ color: '#f4b75c' }} /> : <MoonOutlined />}
+              onClick={() => {
+                if (onToggleDarkMode && themeBtnRef.current) {
+                  onToggleDarkMode(themeBtnRef.current.getBoundingClientRect());
+                }
+              }}
+              title={darkMode ? '切换到亮色模式' : '切换到暗色模式'}
+            />
+            <Dropdown menu={{ items: dropdownItems }} placement="bottomRight">
+              <Space style={{ cursor: 'pointer' }}>
+                <Avatar icon={<UserOutlined />} />
+                <Text className="main-user-name">{user?.username || '管理员'}</Text>
+              </Space>
+            </Dropdown>
+          </Space>
         </Header>
         <Content className="main-content">{children}</Content>
       </Layout>

@@ -1,6 +1,6 @@
 {
   "name": "finance-system-workspace",
-  "version": "1.0.4",
+  "version": "1.0.7",
   "private": true,
   "description": "Unified launcher for finance system",
   "main": "electron/main.js",

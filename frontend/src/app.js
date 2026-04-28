@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ConfigProvider, Layout, Result, Button, Spin, message, Modal, Form, Input, Alert } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
@@ -100,6 +100,33 @@ function PrivateRoute({ children, user }) {
   return children;
 }
 
+// 主题切换动画组件 — 从点击位置揭示新主题
+function ThemeOverlay({ x, y, toDark, onApply, onDone }) {
+  const [startReveal, setStartReveal] = useState(false);
+
+  useEffect(() => {
+    // 立即切换主题，页面内容变为目标主题
+    onApply();
+    // 下一帧启动遮罩收缩动画
+    const raf = requestAnimationFrame(() => setStartReveal(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const handleTransitionEnd = useCallback((e) => {
+    if (e.propertyName === '--hole-radius') {
+      onDone();
+    }
+  }, [onDone]);
+
+  return (
+    <div
+      className={`theme-cover ${toDark ? 'from-light' : 'from-dark'}${startReveal ? ' revealing' : ''}`}
+      style={{ '--ox': `${x}px`, '--oy': `${y}px` }}
+      onTransitionEnd={handleTransitionEnd}
+    />
+  );
+}
+
 // 主应用内容组件
 function AppContent() {
   const [user, setUser] = useState(null);
@@ -110,6 +137,15 @@ function AppContent() {
   const [changingPassword, setChangingPassword] = useState(false);
   const [forceChangeError, setForceChangeError] = useState('');
   const [passwordForm] = Form.useForm();
+
+  // 暗色模式状态
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === '1');
+  const [themeTransition, setThemeTransition] = useState(null);
+
+  // 同步 data-theme 属性到 <html>
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+  }, [darkMode]);
 
   useEffect(() => {
     const initSession = async () => {
@@ -171,6 +207,24 @@ function AppContent() {
     }
   };
 
+  // 暗色模式切换（从按钮圆心向外扩散）
+  const handleToggleDarkMode = useCallback((buttonRect) => {
+    const x = buttonRect.left + buttonRect.width / 2;
+    const y = buttonRect.top + buttonRect.height / 2;
+    setThemeTransition({ x, y, toDark: !darkMode });
+  }, [darkMode]);
+
+  // 动画完成后切换主题
+  const handleApplyTheme = useCallback(() => {
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+    localStorage.setItem('darkMode', newMode ? '1' : '0');
+  }, [darkMode]);
+
+  const handleClearTransition = useCallback(() => {
+    setThemeTransition(null);
+  }, []);
+
   const handleForceChangePassword = async () => {
     try {
       setForceChangeError('');
@@ -195,18 +249,55 @@ function AppContent() {
     }
   };
 
+  // antd 主题配置
+  const lightThemeConfig = {
+    token: {
+      colorPrimary: '#2f7af8',
+      colorInfo: '#26a69a',
+      borderRadius: 16,
+      colorBgLayout: '#eef4fb',
+      colorBgContainer: '#ffffff',
+      colorText: '#18243d',
+    },
+    components: {
+      Card: { borderRadiusLG: 20 },
+      Table: { headerBg: '#f2f6ff' },
+      Button: { controlHeight: 40 },
+    },
+  };
+
+  const darkThemeConfig = {
+    token: {
+      colorPrimary: '#4d8fff',
+      colorInfo: '#3dc9b6',
+      borderRadius: 16,
+      colorBgLayout: '#0d1b2a',
+      colorBgContainer: '#162d45',
+      colorBgElevated: '#1c3552',
+      colorText: '#e0e8f0',
+      colorTextSecondary: '#8b9bb5',
+      colorBorder: '#1e3750',
+      colorBorderSecondary: '#162d45',
+    },
+    components: {
+      Card: { borderRadiusLG: 20 },
+      Table: { headerBg: '#1a3050' },
+      Button: { controlHeight: 40 },
+    },
+  };
+
   // 如果还在加载中，显示加载界面
   if (loading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         height: '100vh',
         flexDirection: 'column'
       }}>
-        <Spin 
-          indicator={<LoadingOutlined style={{ fontSize: 48, color: '#1890ff' }} spin />} 
+        <Spin
+          indicator={<LoadingOutlined style={{ fontSize: 48, color: '#1890ff' }} spin />}
           size="large"
         />
         <div style={{ marginTop: 24, fontSize: 16, color: '#666' }}>
@@ -226,15 +317,15 @@ function AppContent() {
             title="初始化失败"
             subTitle={error}
             extra={[
-              <Button 
-                key="retry" 
-                type="primary" 
+              <Button
+                key="retry"
+                type="primary"
                 onClick={() => window.location.reload()}
               >
                 重新加载
               </Button>,
-              <Button 
-                key="login" 
+              <Button
+                key="login"
                 onClick={() => {
                   localStorage.clear();
                   window.location.href = '/login';
@@ -250,6 +341,17 @@ function AppContent() {
   }
 
   return (
+    <ConfigProvider theme={darkMode ? darkThemeConfig : lightThemeConfig}>
+      {/* 主题切换动画遮罩 */}
+      {themeTransition ? (
+        <ThemeOverlay
+          x={themeTransition.x}
+          y={themeTransition.y}
+          toDark={themeTransition.toDark}
+          onApply={handleApplyTheme}
+          onDone={handleClearTransition}
+        />
+      ) : null}
     <Routes>
       <Route 
         path="/login" 
@@ -257,7 +359,7 @@ function AppContent() {
           user ? (
             <Navigate to="/dashboard" replace />
           ) : (
-            <Login onLogin={handleLogin} />
+            <Login onLogin={handleLogin} darkMode={darkMode} />
           )
         } 
       />
@@ -267,7 +369,7 @@ function AppContent() {
         element={
           <PrivateRoute user={user}>
             <>
-              <MainLayout user={user} onLogout={handleLogout} developerMode={developerMode}>
+              <MainLayout user={user} onLogout={handleLogout} developerMode={developerMode} darkMode={darkMode} onToggleDarkMode={handleToggleDarkMode}>
                 <Suspense fallback={<LoadingComponent />}>
                   <Routes>
                     <Route path="/dashboard" element={<Dashboard />} />
@@ -371,6 +473,7 @@ function AppContent() {
         } 
       />
     </Routes>
+    </ConfigProvider>
   );
 }
 
@@ -389,33 +492,9 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <ConfigProvider
-        theme={{
-          token: {
-            colorPrimary: '#2f7af8',
-            colorInfo: '#26a69a',
-            borderRadius: 16,
-            colorBgLayout: '#eef4fb',
-            colorBgContainer: '#ffffff',
-            colorText: '#18243d',
-          },
-          components: {
-            Card: {
-              borderRadiusLG: 20,
-            },
-            Table: {
-              headerBg: '#f2f6ff',
-            },
-            Button: {
-              controlHeight: 40,
-            },
-          },
-        }}
-      >
-        <Router>
-          <AppContent />
-        </Router>
-      </ConfigProvider>
+      <Router>
+        <AppContent />
+      </Router>
     </ErrorBoundary>
   );
 }

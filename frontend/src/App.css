@@ -78,6 +78,11 @@ body {
   font-weight: 700;
 }
 
+.auth-tagline {
+  color: #2b6cb0;
+  font-weight: 700;
+}
+
 .auth-subtitle {
   margin: 0;
   max-width: 560px;
@@ -423,4 +428,169 @@ body {
     padding: 16px;
     border-radius: 14px;
   }
+}
+
+/* ========== 暗色主题 ========== */
+
+[data-theme="dark"] {
+  --bg-base: #0d1b2a;
+  --bg-layer: #132337;
+  --text-primary: #e0e8f0;
+  --text-secondary: #8b9bb5;
+  --line-soft: #1e3750;
+  --brand: #4d8fff;
+  --brand-soft: #172b45;
+  --accent-cyan: #3dc9b6;
+  --accent-orange: #f4b75c;
+  --accent-violet: #9ca8d0;
+  --accent-mint: #36b7a8;
+  --accent-rose: #6aa8ff;
+}
+
+[data-theme="dark"] body {
+  background:
+    radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(77, 143, 255, 0.06), transparent 24%),
+    radial-gradient(circle at 12% -10%, rgba(61, 201, 182, 0.05), transparent 30%),
+    radial-gradient(circle at 85% 5%, rgba(244, 183, 92, 0.06), transparent 30%),
+    radial-gradient(circle at 70% 90%, rgba(156, 168, 208, 0.05), transparent 32%),
+    linear-gradient(180deg, var(--bg-layer) 0%, var(--bg-base) 100%);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .auth-shell {
+  background:
+    radial-gradient(circle at 10% 0%, rgba(77, 143, 255, 0.1), transparent 32%),
+    radial-gradient(circle at 85% 100%, rgba(61, 201, 182, 0.08), transparent 30%),
+    radial-gradient(circle at 60% 40%, rgba(156, 168, 208, 0.06), transparent 34%),
+    linear-gradient(135deg, #0d1b2a 0%, #132337 100%);
+}
+
+[data-theme="dark"] .auth-tagline {
+  color: #6aa8ff !important;
+}
+
+[data-theme="dark"] .auth-badge {
+  background: rgba(19, 35, 55, 0.86);
+  border-color: rgba(77, 143, 255, 0.16);
+  color: #b0c8e0;
+}
+
+[data-theme="dark"] .auth-badge:hover {
+  box-shadow: 0 8px 18px rgba(77, 143, 255, 0.12);
+}
+
+[data-theme="dark"] .auth-subtitle {
+  color: #8b9bb5;
+}
+
+[data-theme="dark"] .main-header {
+  background: rgba(19, 35, 55, 0.84);
+  border-bottom-color: var(--line-soft);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="dark"] .main-sider {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(77, 143, 255, 0.08), transparent 35%),
+    radial-gradient(circle at 100% 100%, rgba(61, 201, 182, 0.05), transparent 35%),
+    linear-gradient(180deg, #132337 0%, #0d1b2a 100%);
+  border-right-color: var(--line-soft);
+}
+
+[data-theme="dark"] .main-content::before {
+  background: radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(77, 143, 255, 0.08), transparent 24%);
+}
+
+[data-theme="dark"] .surface-card {
+  border-color: var(--line-soft);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="dark"] .surface-card:hover {
+  border-color: rgba(77, 143, 255, 0.26);
+  box-shadow: 0 24px 54px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="dark"] .auth-card {
+  border-color: rgba(77, 143, 255, 0.12);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="dark"] .print-card {
+  background: #132337;
+  color: var(--text-primary);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="dark"] .ant-menu-item-selected {
+  background: linear-gradient(90deg, rgba(77, 143, 255, 0.18) 0%, rgba(61, 201, 182, 0.1) 100%) !important;
+}
+
+[data-theme="dark"] .ant-btn-primary {
+  background: linear-gradient(135deg, #4d8fff 0%, #5fa0ff 45%, #3dc9b6 100%);
+  box-shadow: 0 10px 22px rgba(77, 143, 255, 0.18);
+}
+
+[data-theme="dark"] .page-header p {
+  color: #8b9bb5;
+}
+
+[data-theme="dark"] .ant-tag-blue {
+  background: rgba(77, 143, 255, 0.15);
+  border-color: rgba(77, 143, 255, 0.25);
+  color: #8ab8ff;
+}
+
+/* ========== 主题切换动画 — 从点击位置向外扩散 ========== */
+
+/* 可动画的镂空半径 */
+@property --hole-radius {
+  syntax: '<length>';
+  initial-value: 0px;
+  inherits: false;
+}
+
+.theme-cover {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  pointer-events: none;
+  /* 初始：没有镂空，遮罩全黑 → 完全覆盖 */
+  --hole-radius: 0px;
+  -webkit-mask-image: radial-gradient(
+    circle at var(--ox) var(--oy),
+    transparent var(--hole-radius),
+    black calc(var(--hole-radius) + 0.5px)
+  );
+  mask-image: radial-gradient(
+    circle at var(--ox) var(--oy),
+    transparent var(--hole-radius),
+    black calc(var(--hole-radius) + 0.5px)
+  );
+  transition: --hole-radius 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 镂空半径扩散到全屏 → 遮罩全透明 → 旧主题外观完全消失 */
+.theme-cover.revealing {
+  --hole-radius: 150vmax;
+}
+
+/* 切换到暗色时：遮罩层显示旧亮色主题的外观 */
+.theme-cover.from-light {
+  background:
+    radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(47, 122, 248, 0.09), transparent 24%),
+    radial-gradient(circle at 12% -10%, rgba(38, 166, 154, 0.12), transparent 30%),
+    radial-gradient(circle at 85% 5%, rgba(244, 183, 92, 0.12), transparent 30%),
+    radial-gradient(circle at 70% 90%, rgba(124, 139, 184, 0.1), transparent 32%),
+    linear-gradient(180deg, #f8fbff 0%, #eaf1f9 100%);
+}
+
+/* 切换到亮色时：遮罩层显示旧暗色主题的外观 */
+.theme-cover.from-dark {
+  background:
+    radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(77, 143, 255, 0.06), transparent 24%),
+    radial-gradient(circle at 12% -10%, rgba(61, 201, 182, 0.05), transparent 30%),
+    radial-gradient(circle at 85% 5%, rgba(244, 183, 92, 0.06), transparent 30%),
+    radial-gradient(circle at 70% 90%, rgba(156, 168, 208, 0.05), transparent 32%),
+    linear-gradient(180deg, #132337 0%, #0d1b2a 100%);
 }

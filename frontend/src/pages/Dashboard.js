@@ -57,9 +57,9 @@ function Dashboard() {
           <Card title="系统状态" loading={state.loading} className="surface-card">
             <List
               dataSource={[
-                '默认账号 admin / admin123 可直接登录',
-                '当前为正式版空数据初始化，请按业务实际录入',
-                '已启用本地持久化、备份恢复与操作审计',
+                `数据持久化模式 · 本地加密存储`,
+                `已启用自动备份与操作审计`,
+                `当前共 ${state.reports?.topProducts?.length || 0} 种商品，${transactions.length} 笔财务流水`,
               ]}
               renderItem={(item) => <List.Item>{item}</List.Item>}
             />
