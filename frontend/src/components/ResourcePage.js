@@ -5,7 +5,7 @@ import PageHeader from './PageHeader';
 import { createResource, deleteResource, fetchResource, updateResource } from '../services/api';
 import { formatFieldLabel, getEditableFieldKeys, getFieldConfig, resourceMeta } from '../config/resourceMeta';
 
-function renderValue(value) {
+function renderValue(value, fieldConfig) {
   if (value === null || value === undefined || value === '') {
     return '-';
   }
@@ -14,7 +14,7 @@ function renderValue(value) {
     return value.toLocaleString();
   }
 
-  if (typeof value === 'string' && /已|待|成功|启用/.test(value)) {
+  if (fieldConfig?.display === 'tag' && typeof value === 'string') {
     return <Tag color="blue">{value}</Tag>;
   }
 
@@ -26,7 +26,7 @@ function makeColumns(resource, keys) {
     title: formatFieldLabel(resource, key),
     dataIndex: key,
     key,
-    render: renderValue,
+    render: (value) => renderValue(value, getFieldConfig(resource, key)),
   }));
 }
 

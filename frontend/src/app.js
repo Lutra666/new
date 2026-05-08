@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { ConfigProvider, Layout, Result, Button, Spin, message, Modal, Form, Input, Alert } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { ConfigProvider, Layout, Result, Button, message, Modal, Form, Input, Alert } from 'antd';
 import Login from './pages/Login';
 import MainLayout from './components/MainLayout';
+import ErrorBoundary from './components/ErrorBoundary';
+import LoadingComponent from './components/LoadingComponent';
+import PrivateRoute from './components/PrivateRoute';
+import ThemeOverlay from './components/ThemeOverlay';
 import { changePassword, getProfile } from './services/api';
 import './App.css';
 
@@ -24,110 +27,6 @@ const Diagnostics = lazy(() => import('./pages/Diagnostics'));
 const Data = lazy(() => import('./pages/Data'));
 const PrintView = lazy(() => import('./pages/PrintView'));
 
-// 加载组件
-const LoadingComponent = () => (
-  <div style={{ 
-    display: 'flex', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    height: '100vh',
-    flexDirection: 'column'
-  }}>
-    <Spin 
-      indicator={<LoadingOutlined style={{ fontSize: 48, color: '#1890ff' }} spin />} 
-      size="large"
-    />
-    <div style={{ marginTop: 24, fontSize: 16, color: '#666' }}>
-      正在加载财务管理系统...
-    </div>
-  </div>
-);
-
-// 错误边界组件
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false, error: null, errorInfo: null };
-  }
-
-  static getDerivedStateFromError(error) {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    console.error('App Error:', error, errorInfo);
-    this.setState({
-      error: error,
-      errorInfo: errorInfo
-    });
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <Layout style={{ minHeight: '100vh' }}>
-          <Content style={{ padding: '50px 24px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <Result
-              status="500"
-              title="500"
-              subTitle="抱歉，系统遇到了一些问题，请稍后重试。"
-              extra={
-                <Button 
-                  type="primary" 
-                  onClick={() => window.location.reload()}
-                >
-                  重新加载
-                </Button>
-              }
-            />
-          </Content>
-        </Layout>
-      );
-    }
-
-    return this.props.children;
-  }
-}
-
-// 私有路由组件
-function PrivateRoute({ children, user }) {
-  const location = useLocation();
-  
-  if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-  
-  return children;
-}
-
-// 主题切换动画组件 — 从点击位置揭示新主题
-function ThemeOverlay({ x, y, toDark, onApply, onDone }) {
-  const [startReveal, setStartReveal] = useState(false);
-
-  useEffect(() => {
-    // 立即切换主题，页面内容变为目标主题
-    onApply();
-    // 下一帧启动遮罩收缩动画
-    const raf = requestAnimationFrame(() => setStartReveal(true));
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
-  const handleTransitionEnd = useCallback((e) => {
-    if (e.propertyName === '--hole-radius') {
-      onDone();
-    }
-  }, [onDone]);
-
-  return (
-    <div
-      className={`theme-cover ${toDark ? 'from-light' : 'from-dark'}${startReveal ? ' revealing' : ''}`}
-      style={{ '--ox': `${x}px`, '--oy': `${y}px` }}
-      onTransitionEnd={handleTransitionEnd}
-    />
-  );
-}
-
-// 主应用内容组件
 function AppContent() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -138,11 +37,9 @@ function AppContent() {
   const [forceChangeError, setForceChangeError] = useState('');
   const [passwordForm] = Form.useForm();
 
-  // 暗色模式状态
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === '1');
   const [themeTransition, setThemeTransition] = useState(null);
 
-  // 同步 data-theme 属性到 <html>
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
   }, [darkMode]);
@@ -207,14 +104,12 @@ function AppContent() {
     }
   };
 
-  // 暗色模式切换（从按钮圆心向外扩散）
   const handleToggleDarkMode = useCallback((buttonRect) => {
     const x = buttonRect.left + buttonRect.width / 2;
     const y = buttonRect.top + buttonRect.height / 2;
     setThemeTransition({ x, y, toDark: !darkMode });
   }, [darkMode]);
 
-  // 动画完成后切换主题
   const handleApplyTheme = useCallback(() => {
     const newMode = !darkMode;
     setDarkMode(newMode);
@@ -249,7 +144,6 @@ function AppContent() {
     }
   };
 
-  // antd 主题配置
   const lightThemeConfig = {
     token: {
       colorPrimary: '#2f7af8',
@@ -286,28 +180,10 @@ function AppContent() {
     },
   };
 
-  // 如果还在加载中，显示加载界面
   if (loading) {
-    return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        flexDirection: 'column'
-      }}>
-        <Spin
-          indicator={<LoadingOutlined style={{ fontSize: 48, color: '#1890ff' }} spin />}
-          size="large"
-        />
-        <div style={{ marginTop: 24, fontSize: 16, color: '#666' }}>
-          正在初始化财务管理系统...
-        </div>
-      </div>
-    );
+    return <LoadingComponent text="正在初始化财务管理系统..." />;
   }
 
-  // 如果有错误，显示错误界面
   if (error) {
     return (
       <Layout style={{ minHeight: '100vh' }}>
@@ -317,22 +193,15 @@ function AppContent() {
             title="初始化失败"
             subTitle={error}
             extra={[
-              <Button
-                key="retry"
-                type="primary"
-                onClick={() => window.location.reload()}
-              >
+              <Button key="retry" type="primary" onClick={() => window.location.reload()}>
                 重新加载
               </Button>,
-              <Button
-                key="login"
-                onClick={() => {
-                  localStorage.clear();
-                  window.location.href = '/login';
-                }}
-              >
+              <Button key="login" onClick={() => {
+                localStorage.clear();
+                window.location.href = '/login';
+              }}>
                 重新登录
-              </Button>
+              </Button>,
             ]}
           />
         </Content>
@@ -342,7 +211,6 @@ function AppContent() {
 
   return (
     <ConfigProvider theme={darkMode ? darkThemeConfig : lightThemeConfig}>
-      {/* 主题切换动画遮罩 */}
       {themeTransition ? (
         <ThemeOverlay
           x={themeTransition.x}
@@ -352,127 +220,121 @@ function AppContent() {
           onDone={handleClearTransition}
         />
       ) : null}
-    <Routes>
-      <Route 
-        path="/login" 
-        element={
-          user ? (
-            <Navigate to="/dashboard" replace />
-          ) : (
-            <Login onLogin={handleLogin} darkMode={darkMode} />
-          )
-        } 
-      />
-      
-      <Route 
-        path="/*" 
-        element={
-          <PrivateRoute user={user}>
-            <>
-              <MainLayout user={user} onLogout={handleLogout} developerMode={developerMode} darkMode={darkMode} onToggleDarkMode={handleToggleDarkMode}>
-                <Suspense fallback={<LoadingComponent />}>
-                  <Routes>
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/products" element={<Products />} />
-                    <Route path="/sales" element={<SalesOrder />} />
-                    <Route path="/customers" element={<Customers />} />
-                    <Route path="/suppliers" element={<Suppliers />} />
-                    <Route path="/purchase" element={<Purchase />} />
-                    <Route path="/inventory" element={<Inventory />} />
-                    <Route path="/finance" element={<Finance />} />
-                    <Route path="/reports" element={<Reports />} />
-                    <Route
-                      path="/settings"
-                      element={
-                        <System
-                          developerMode={developerMode}
-                          onToggleDeveloperMode={handleToggleDeveloperMode}
-                        />
-                      }
-                    />
-                    <Route
-                      path="/diagnostics"
-                      element={developerMode ? <Diagnostics /> : <Navigate to="/dashboard" replace />}
-                    />
-                    <Route
-                      path="/data"
-                      element={<Data developerMode={developerMode} />}
-                    />
-                    <Route path="/print/:type/:id" element={<PrintView />} />
-                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                    <Route path="*" element={<Navigate to="/dashboard" replace />} />
-                  </Routes>
-                </Suspense>
-              </MainLayout>
-              <Modal
-                open={requirePasswordChange}
-                title="首次登录请先修改密码"
-                closable={false}
-                maskClosable={false}
-                keyboard={false}
-                okText="确认修改并重新登录"
-                cancelButtonProps={{ style: { display: 'none' } }}
-                okButtonProps={{ loading: changingPassword }}
-                onOk={handleForceChangePassword}
-              >
-                <p style={{ marginBottom: 12, color: '#5d6992' }}>
-                  为保证数据安全，默认密码账户必须先改密后再继续使用系统。
-                </p>
-                {forceChangeError ? (
-                  <Alert
-                    type="error"
-                    showIcon
-                    message={forceChangeError}
-                    style={{ marginBottom: 12 }}
-                  />
-                ) : null}
-                <Form form={passwordForm} layout="vertical">
-                  <Form.Item
-                    label="原密码"
-                    name="oldPassword"
-                    rules={[{ required: true, message: '请输入原密码' }]}
-                  >
-                    <Input.Password placeholder="请输入当前密码" />
-                  </Form.Item>
-                  <Form.Item
-                    label="新密码"
-                    name="newPassword"
-                    rules={[
-                      { required: true, message: '请输入新密码' },
-                      { min: 8, message: '至少 8 位' },
-                      {
-                        pattern: /^(?=.*[A-Za-z])(?=.*\d).+$/,
-                        message: '需包含字母和数字',
-                      },
-                    ]}
-                  >
-                    <Input.Password placeholder="请输入新密码" />
-                  </Form.Item>
-                  <Form.Item
-                    label="确认新密码"
-                    name="confirmPassword"
-                    dependencies={['newPassword']}
-                    rules={[
-                      { required: true, message: '请再次输入新密码' },
-                      ({ getFieldValue }) => ({
-                        validator(_, value) {
-                          if (!value || getFieldValue('newPassword') === value) {
-                            return Promise.resolve();
-                          }
-                          return Promise.reject(new Error('两次输入的新密码不一致'));
-                        },
-                      }),
-                    ]}
-                  >
-                    <Input.Password placeholder="请再次输入新密码" />
-                  </Form.Item>
-                </Form>
-              </Modal>
-            </>
-          </PrivateRoute>
-        } 
-      />
-    </Routes>
+      <Routes>
+        <Route
+          path="/login"
+          element={
+            user ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <Login onLogin={handleLogin} darkMode={darkMode} />
+            )
+          }
+        />
+        <Route
+          path="/*"
+          element={
+            <PrivateRoute user={user}>
+              <>
+                <MainLayout
+                  user={user}
+                  onLogout={handleLogout}
+                  developerMode={developerMode}
+                  darkMode={darkMode}
+                  onToggleDarkMode={handleToggleDarkMode}
+                >
+                  <Suspense fallback={<LoadingComponent text="正在加载财务管理系统..." />}>
+                    <Routes>
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/products" element={<Products />} />
+                      <Route path="/sales" element={<SalesOrder />} />
+                      <Route path="/customers" element={<Customers />} />
+                      <Route path="/suppliers" element={<Suppliers />} />
+                      <Route path="/purchase" element={<Purchase />} />
+                      <Route path="/inventory" element={<Inventory />} />
+                      <Route path="/finance" element={<Finance />} />
+                      <Route path="/reports" element={<Reports />} />
+                      <Route
+                        path="/settings"
+                        element={
+                          <System
+                            developerMode={developerMode}
+                            onToggleDeveloperMode={handleToggleDeveloperMode}
+                          />
+                        }
+                      />
+                      <Route
+                        path="/diagnostics"
+                        element={developerMode ? <Diagnostics /> : <Navigate to="/dashboard" replace />}
+                      />
+                      <Route path="/data" element={<Data developerMode={developerMode} />} />
+                      <Route path="/print/:type/:id" element={<PrintView />} />
+                      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                    </Routes>
+                  </Suspense>
+                </MainLayout>
+                <Modal
+                  open={requirePasswordChange}
+                  title="首次登录请先修改密码"
+                  closable={false}
+                  maskClosable={false}
+                  keyboard={false}
+                  okText="确认修改并重新登录"
+                  cancelButtonProps={{ style: { display: 'none' } }}
+                  okButtonProps={{ loading: changingPassword }}
+                  onOk={handleForceChangePassword}
+                >
+                  <p style={{ marginBottom: 12, color: '#5d6992' }}>
+                    为保证数据安全，默认密码账户必须先改密后再继续使用系统。
+                  </p>
+                  {forceChangeError ? (
+                    <Alert type="error" showIcon message={forceChangeError} style={{ marginBottom: 12 }} />
+                  ) : null}
+                  <Form form={passwordForm} layout="vertical">
+                    <Form.Item
+                      label="原密码"
+                      name="oldPassword"
+                      rules={[{ required: true, message: '请输入原密码' }]}
+                    >
+                      <Input.Password placeholder="请输入当前密码" />
+                    </Form.Item>
+                    <Form.Item
+                      label="新密码"
+                      name="newPassword"
+                      rules={[
+                        { required: true, message: '请输入新密码' },
+                        { min: 8, message: '至少 8 位' },
+                        { pattern: /^(?=.*[A-Za-z])(?=.*\d).+$/, message: '需包含字母和数字' },
+                      ]}
+                    >
+                      <Input.Password placeholder="请输入新密码" />
+                    </Form.Item>
+                    <Form.Item
+                      label="确认新密码"
+                      name="confirmPassword"
+                      dependencies={['newPassword']}
+                      rules={[
+                        { required: true, message: '请再次输入新密码' },
+                        ({ getFieldValue }) => ({
+                          validator(_, value) {
+                            if (!value || getFieldValue('newPassword') === value) {
+                              return Promise.resolve();
+                            }
+                            return Promise.reject(new Error('两次输入的新密码不一致'));
+                          },
+                        }),
+                      ]}
+                    >
+                      <Input.Password placeholder="请再次输入新密码" />
+                    </Form.Item>
+                  </Form>
+                </Modal>
+              </>
+            </PrivateRoute>
+          }
+        />
+      </Routes>
     </ConfigProvider>
   );
 }

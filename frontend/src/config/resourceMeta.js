@@ -75,7 +75,7 @@ const resourceMeta = {
         lookup: { resource: 'customers', valueKey: 'name', labelKey: 'name' },
       },
       amount: { type: 'number', min: 0, required: true },
-      status: { type: 'select', options: ['已完成', '待收款', '待发货'], required: true },
+      status: { type: 'select', options: ['已完成', '待收款', '待发货'], required: true, display: 'tag' },
       date: { type: 'text', required: true },
     },
   },
@@ -96,7 +96,7 @@ const resourceMeta = {
         lookup: { resource: 'suppliers', valueKey: 'name', labelKey: 'name' },
       },
       amount: { type: 'number', min: 0, required: true },
-      status: { type: 'select', options: ['已入库', '待付款', '待审核'], required: true },
+      status: { type: 'select', options: ['已入库', '待付款', '待审核'], required: true, display: 'tag' },
       date: { type: 'text', required: true },
     },
   },
@@ -137,7 +137,7 @@ const resourceMeta = {
   },
 };
 
-const defaultReadonlyKeys = ['id', 'created_at', 'last_login_at', 'updatedAt'];
+const defaultReadonlyKeys = ['id', 'createdAt', 'updatedAt', 'created_at', 'last_login_at', 'password_updated_at', 'failed_login_attempts', 'locked_until'];
 
 const formatFieldLabel = (resource, key) => {
   const label = resourceMeta[resource]?.labels?.[key];

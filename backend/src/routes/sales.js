@@ -1,68 +1,16 @@
 const express = require('express');
 const store = require('../data/mockStore');
+const {
+  toNum,
+  normalizeItems,
+  calcAmount,
+  toQtyMap,
+  mergeDiffMap,
+  applySalesInventoryDelta,
+  checkInventorySufficient,
+} = require('../shared/orderHelpers');
 
 const router = express.Router();
-
-const toNum = (value) => Number(value || 0);
-
-const normalizeItems = (items) =>
-  (Array.isArray(items) ? items : [])
-    .map((item) => ({
-      productName: item?.productName || item?.product || '',
-      quantity: Math.max(0, toNum(item?.quantity)),
-      unitPrice: Math.max(0, toNum(item?.unitPrice)),
-    }))
-    .filter((item) => item.productName && item.quantity > 0);
-
-const calcAmount = (items) =>
-  normalizeItems(items).reduce((sum, item) => sum + item.quantity * item.unitPrice, 0);
-
-const toQtyMap = (items) => {
-  const map = new Map();
-  normalizeItems(items).forEach((item) => {
-    map.set(item.productName, (map.get(item.productName) || 0) + item.quantity);
-  });
-  return map;
-};
-
-const mergeDiffMap = (beforeMap, afterMap) => {
-  const names = new Set([...beforeMap.keys(), ...afterMap.keys()]);
-  const diffMap = new Map();
-  names.forEach((name) => {
-    const diff = (beforeMap.get(name) || 0) - (afterMap.get(name) || 0);
-    if (diff !== 0) {
-      diffMap.set(name, diff);
-    }
-  });
-  return diffMap;
-};
-
-const applyInventoryDelta = (deltaMap) => {
-  const inventory = store.list('inventory');
-  deltaMap.forEach((delta, productName) => {
-    const record = inventory.find((item) => item.product === productName);
-    if (!record) {
-      return;
-    }
-    const nextQty = Math.max(0, toNum(record.quantity) + toNum(delta));
-    store.update('inventory', record.id, { quantity: nextQty });
-  });
-};
-
-const checkInventorySufficient = (deltaMap) => {
-  const inventory = store.list('inventory');
-  const shortages = [];
-  deltaMap.forEach((delta, productName) => {
-    if (delta >= 0) return;
-    const record = inventory.find((item) => item.product === productName);
-    const currentQty = record ? toNum(record.quantity) : 0;
-    const needed = Math.abs(delta);
-    if (currentQty < needed) {
-      shortages.push({ product: productName, available: currentQty, needed });
-    }
-  });
-  return shortages;
-};
 
 router.get('/', (req, res) => {
   res.json({
@@ -77,6 +25,19 @@ router.post('/', (req, res) => {
   const items = normalizeItems(payload.items);
   const amount = items.length > 0 ? calcAmount(items) : Math.max(0, toNum(payload.amount));
 
+  const deltaMap = new Map();
+  items.forEach((item) => {
+    deltaMap.set(item.productName, (deltaMap.get(item.productName) || 0) - item.quantity);
+  });
+
+  const shortages = checkInventorySufficient(store, deltaMap);
+  if (shortages.length > 0) {
+    return res.status(400).json({
+      error: '库存不足，无法创建销售订单',
+      shortages: shortages.map((s) => `${s.product}（需 ${s.needed}，库存 ${s.available}）`),
+    });
+  }
+
   const created = store.create('sales', {
     orderNo: payload.orderNo,
     customer: payload.customer,
@@ -86,20 +47,7 @@ router.post('/', (req, res) => {
     items,
   });
 
-  const deltaMap = new Map();
-  items.forEach((item) => {
-    deltaMap.set(item.productName, (deltaMap.get(item.productName) || 0) - item.quantity);
-  });
-
-  const shortages = checkInventorySufficient(deltaMap);
-  if (shortages.length > 0) {
-    return res.status(400).json({
-      error: '库存不足，无法创建销售订单',
-      shortages: shortages.map((s) => `${s.product}（需 ${s.needed}，库存 ${s.available}）`),
-    });
-  }
-
-  applyInventoryDelta(deltaMap);
+  applySalesInventoryDelta(store, deltaMap);
 
   res.status(201).json({
     success: true,
@@ -122,18 +70,11 @@ router.put('/:id', (req, res) => {
       ? calcAmount(nextItems)
       : Math.max(0, toNum(payload.amount));
 
-  const updated = store.update('sales', id, {
-    ...existing,
-    ...payload,
-    amount: nextAmount,
-    items: nextItems,
-  });
-
   const oldMap = toQtyMap(existing.items);
   const newMap = toQtyMap(nextItems);
-  const diffMap = mergeDiffMap(oldMap, newMap);
+  const diffMap = mergeDiffMap(oldMap, newMap, -1);
 
-  const shortages = checkInventorySufficient(diffMap);
+  const shortages = checkInventorySufficient(store, diffMap);
   if (shortages.length > 0) {
     return res.status(400).json({
       error: '库存不足，无法更新销售订单',
@@ -141,7 +82,14 @@ router.put('/:id', (req, res) => {
     });
   }
 
-  applyInventoryDelta(diffMap);
+  const updated = store.update('sales', id, {
+    ...existing,
+    ...payload,
+    amount: nextAmount,
+    items: nextItems,
+  });
+
+  applySalesInventoryDelta(store, diffMap);
 
   return res.json({
     success: true,
@@ -163,7 +111,7 @@ router.delete('/:id', (req, res) => {
   }
 
   const rollbackMap = toQtyMap(existing.items);
-  applyInventoryDelta(rollbackMap);
+  applySalesInventoryDelta(store, rollbackMap);
 
   return res.json({
     success: true,

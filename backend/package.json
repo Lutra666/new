@@ -1,6 +1,6 @@
 {
   "name": "finance-system-backend",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "财务管理系统后端 - 批发零售版",
   "main": "src/server.js",
   "scripts": {

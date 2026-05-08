@@ -89,9 +89,9 @@ app.use(
 );
 app.use(compression());
 app.use(morgan('dev'));
-app.use(hpp());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(hpp());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use((req, res, next) => {
