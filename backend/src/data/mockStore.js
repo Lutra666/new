@@ -343,7 +343,7 @@ const getReportSummary = () => ({
 const getSystemInfo = () => ({
   appName: '鳌龙财务管理系统',
   mode: 'production',
-  version: '1.0.8',
+  version: '1.0.9',
   features: ['正式版数据存储', '账号鉴权', '本地备份恢复', '操作审计'],
 });
 
@@ -378,7 +378,7 @@ const createBackup = (operator = 'system') => {
     meta: {
       createdAt: now(),
       operator,
-      version: '1.0.8',
+      version: '1.0.9',
       signature,
     },
     state: stateClone,

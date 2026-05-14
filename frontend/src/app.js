@@ -26,6 +26,7 @@ const System = lazy(() => import('./pages/System'));
 const Diagnostics = lazy(() => import('./pages/Diagnostics'));
 const Data = lazy(() => import('./pages/Data'));
 const PrintView = lazy(() => import('./pages/PrintView'));
+const AIAnalysis = lazy(() => import('./pages/AIAnalysis'));
 
 function AppContent() {
   const [user, setUser] = useState(null);
@@ -269,6 +270,7 @@ function AppContent() {
                       />
                       <Route path="/data" element={<Data developerMode={developerMode} />} />
                       <Route path="/print/:type/:id" element={<PrintView />} />
+                      <Route path="/ai-analysis" element={<AIAnalysis />} />
                       <Route path="/" element={<Navigate to="/dashboard" replace />} />
                       <Route path="*" element={<Navigate to="/dashboard" replace />} />
                     </Routes>

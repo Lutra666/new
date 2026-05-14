@@ -19,6 +19,7 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   SafetyCertificateOutlined,
+  BulbOutlined,
 } from '@ant-design/icons';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -35,6 +36,7 @@ const menuItems = [
   { key: '/inventory', icon: <DatabaseOutlined />, label: '库存中心' },
   { key: '/finance', icon: <MoneyCollectOutlined />, label: '财务中心' },
   { key: '/reports', icon: <BarChartOutlined />, label: '报表中心' },
+  { key: '/ai-analysis', icon: <BulbOutlined />, label: 'AI智能分析' },
   { key: '/settings', icon: <SettingOutlined />, label: '系统设置' },
   { key: '/data', icon: <FileTextOutlined />, label: '数据管理' },
 ];

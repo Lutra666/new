@@ -156,6 +156,20 @@ app.use('/api/print', authenticateToken, require('./routes/print'));
 app.use('/api/accounts', authenticateToken, require('./routes/accounts'));
 app.use('/api/warehouses', authenticateToken, require('./routes/warehouses'));
 
+const aiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: Number(process.env.AI_RATE_LIMIT_MAX) || 20,
+  message: { error: 'AI分析请求过于频繁，请15分钟后再试', code: 429 },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => {
+    const ip = req.ip || '';
+    const localIps = ['127.0.0.1', '::1', '::ffff:127.0.0.1'];
+    return isDev && localIps.includes(ip);
+  },
+});
+app.use('/api/ai', authenticateToken, aiLimiter, require('./routes/ai'));
+
 if (fs.existsSync(path.join(frontendBuildPath, 'index.html'))) {
   app.use(express.static(frontendBuildPath));
 
