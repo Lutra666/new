@@ -6,7 +6,18 @@
 
 ---
 
-## AI 智能分析
+## 下载安装
+
+| 版本 | 日期 | 下载 |
+|------|------|------|
+| **v1.0.10** (最新) | 2026-05-15 | [Aolong Finance System Setup 1.0.10.exe](https://github.com/Lutra666/new/releases/tag/v1.0.10) |
+| v1.0.9 | 2026-05-14 | [Aolong Finance System Setup 1.0.9.exe](https://github.com/Lutra666/new/releases/download/v1.0.9/Aolong.Finance.System.Setup.1.0.9.exe) |
+| 历史版本 | — | [GitHub Releases](https://github.com/Lutra666/new/releases) |
+
+> **注意**：v1.0.10 安装包需在本地构建（`npm run dist:win`），或从 [Releases 页面](https://github.com/Lutra666/new/releases) 下载已上传的版本。v1.0.9 可直接下载安装。
+
+---
+## 特色功能：AI 智能分析
 
 这是本系统区别于传统进销存软件的核心功能。通过 Anthropic SDK 对接大语言模型（默认 DeepSeek V4，可切换 Claude），将自然语言理解能力嵌入财务管理场景。入口：侧边栏「AI 智能分析」。
 
@@ -75,19 +86,6 @@ AI_RATE_LIMIT_MAX=20
 默认使用 DeepSeek 兼容端点，一行配置即可切换到 Claude API (`https://api.anthropic.com`)。
 
 ---
-
-## 下载安装
-
-| 版本 | 日期 | 下载 |
-|------|------|------|
-| **v1.0.10** (最新) | 2026-05-15 | [Aolong Finance System Setup 1.0.10.exe](https://github.com/Lutra666/new/releases/tag/v1.0.10) |
-| v1.0.9 | 2026-05-14 | [Aolong Finance System Setup 1.0.9.exe](https://github.com/Lutra666/new/releases/download/v1.0.9/Aolong.Finance.System.Setup.1.0.9.exe) |
-| 历史版本 | — | [GitHub Releases](https://github.com/Lutra666/new/releases) |
-
-> **注意**：v1.0.10 安装包需在本地构建（`npm run dist:win`），或从 [Releases 页面](https://github.com/Lutra666/new/releases) 下载已上传的版本。v1.0.9 可直接下载安装。
-
----
-
 ## 技术栈
 
 | 层级 | 技术 |
