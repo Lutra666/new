@@ -6,11 +6,11 @@ function PageHeader({ title, description, extra }) {
       <div>
         <div
           style={{
-            width: 58,
-            height: 6,
+            width: 48,
+            height: 4,
             borderRadius: 999,
-            marginBottom: 10,
-            background: 'linear-gradient(90deg, #0a7cff 0%, #00c99a 45%, #ff8b3d 100%)',
+            marginBottom: 12,
+            background: 'linear-gradient(90deg, #4f46e5 0%, #818cf8 45%, #0d9488 100%)',
           }}
         />
         <h2>{title}</h2>

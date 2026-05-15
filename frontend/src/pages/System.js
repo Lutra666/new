@@ -48,7 +48,7 @@ function System({ developerMode = false, onToggleDeveloperMode }) {
           }
           renderItem={(item) => <List.Item>{item}</List.Item>}
         />
-        <div style={{ marginTop: 20, padding: 14, border: '1px solid #d8e3f1', borderRadius: 12 }}>
+        <div style={{ marginTop: 20, padding: 14, border: '1px solid var(--line-soft)', borderRadius: 12 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
             <div>
               <Text strong>开发者模式</Text>

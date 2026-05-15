@@ -26,6 +26,7 @@ function makeColumns(resource, keys) {
     title: formatFieldLabel(resource, key),
     dataIndex: key,
     key,
+    ellipsis: true,
     render: (value) => renderValue(value, getFieldConfig(resource, key)),
   }));
 }
@@ -169,7 +170,9 @@ function ResourcePage({ resource, title, description, editable = true }) {
       await deleteResource(resource, id);
       message.success('删除成功');
       await loadResource(resource);
-    } catch (err) {}
+    } catch (err) {
+      message.error(err?.response?.data?.error || '删除失败，请稍后重试');
+    }
   };
 
   const handleSubmit = async () => {
@@ -203,7 +206,7 @@ function ResourcePage({ resource, title, description, editable = true }) {
       title: '操作',
       key: 'actions',
       fixed: 'right',
-      width: 160,
+      width: 140,
       render: (_, record) => (
         <Space>
           <Button size="small" icon={<EditOutlined />} onClick={() => openEditModal(record)}>
@@ -245,7 +248,7 @@ function ResourcePage({ resource, title, description, editable = true }) {
             placeholder="输入关键词过滤当前列表"
             value={keyword}
             onChange={(event) => setKeyword(event.target.value)}
-            style={{ maxWidth: 320 }}
+            style={{ maxWidth: 280 }}
           />
           <Space>
             <Tag color="processing">当前记录 {filteredItems.length} 条</Tag>

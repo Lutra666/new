@@ -4,7 +4,10 @@
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#1890FF" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <meta name="theme-color" content="#4f46e5" />
     <meta
       name="description"
       content="鳌龙财务管理系统 - 专业版批发零售财务解决方案"
@@ -27,57 +30,61 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background: linear-gradient(135deg, #f3f2ef 0%, #e6e4df 100%);
       }
-      
+
       .loader-container {
         text-align: center;
         padding: 40px;
         border-radius: 16px;
         background: white;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        box-shadow: 0 0 0 0.5px rgba(0,0,0,0.06), 0 4px 8px rgba(0,0,0,0.04), 0 12px 24px rgba(0,0,0,0.06), 0 24px 48px rgba(0,0,0,0.10);
         backdrop-filter: blur(10px);
       }
-      
+
       .loader {
         width: 50px;
         height: 50px;
-        border: 5px solid #e2e8f0;
-        border-top: 5px solid #3b82f6;
+        border: 5px solid #e6e4df;
+        border-top: 5px solid #4f46e5;
         border-radius: 50%;
         animation: spin 1s linear infinite;
         margin: 0 auto 20px;
       }
-      
+
       @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
       }
-      
+
       .loader-text {
         font-size: 16px;
-        color: #4a5568;
+        color: #6b6b75;
         font-weight: 500;
         margin-bottom: 8px;
+        font-family: "Inter", "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif;
       }
-      
+
       .loader-subtext {
         font-size: 14px;
-        color: #a0aec0;
+        color: #94949e;
         margin-bottom: 0;
+        font-family: "Inter", "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif;
       }
-      
+
       .app-title {
         font-size: 24px;
         font-weight: bold;
-        color: #1a202c;
+        color: #1b1b22;
         margin-bottom: 8px;
+        font-family: "Inter", "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif;
       }
-      
+
       .app-subtitle {
         font-size: 14px;
-        color: #718096;
+        color: #6b6b75;
         margin-bottom: 24px;
+        font-family: "Inter", "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif;
       }
     </style>
   </head>

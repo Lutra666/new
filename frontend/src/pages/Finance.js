@@ -43,6 +43,7 @@ function Finance() {
       <Card title="收付流水" loading={state.loading} className="surface-card">
         <List
           dataSource={state.data?.transactions || []}
+          locale={{ emptyText: '暂无收付流水记录' }}
           renderItem={(item) => (
             <List.Item>
               <List.Item.Meta title={item.title} description={`${item.counterparty} · ${item.date}`} />

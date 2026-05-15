@@ -9,6 +9,31 @@ let mainWindow;
 const backendPort = Number(process.env.PORT || 3001);
 const appRoot = app.isPackaged ? process.resourcesPath : path.join(__dirname, '..');
 const backendRoot = path.join(appRoot, 'backend');
+const windowStateFile = path.join(app.getPath('userData'), 'window-state.json');
+
+function loadWindowState() {
+  try {
+    if (fs.existsSync(windowStateFile)) {
+      return JSON.parse(fs.readFileSync(windowStateFile, 'utf8'));
+    }
+  } catch (_) { /* 忽略损坏的状态文件 */ }
+  return null;
+}
+
+function saveWindowState() {
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+  const bounds = mainWindow.getBounds();
+  const state = {
+    x: bounds.x,
+    y: bounds.y,
+    width: bounds.width,
+    height: bounds.height,
+    isMaximized: mainWindow.isMaximized(),
+  };
+  try {
+    fs.writeFileSync(windowStateFile, JSON.stringify(state, null, 2), 'utf8');
+  } catch (_) { /* 忽略写入失败 */ }
+}
 
 function setDefaultEnv() {
   process.env.NODE_ENV = 'production';
@@ -51,11 +76,13 @@ function startBackend() {
 
 function createMainWindow() {
   const allowedOrigin = `http://127.0.0.1:${backendPort}`;
+  const savedState = loadWindowState();
+
   mainWindow = new BrowserWindow({
-    width: 1400,
-    height: 900,
-    minWidth: 1100,
-    minHeight: 700,
+    width: savedState?.width || 1500,
+    height: savedState?.height || 900,
+    minWidth: 1024,
+    minHeight: 680,
     show: false,
     autoHideMenuBar: true,
     webPreferences: {
@@ -67,8 +94,20 @@ function createMainWindow() {
     },
   });
 
+  if (savedState?.x !== undefined && savedState?.y !== undefined) {
+    mainWindow.setPosition(savedState.x, savedState.y);
+  }
+
+  if (savedState?.isMaximized !== false) {
+    mainWindow.maximize();
+  }
+
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
+  });
+
+  mainWindow.on('close', () => {
+    saveWindowState();
   });
 
   mainWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));

@@ -80,6 +80,10 @@ app.use(
       if (isDev) {
         return callback(null, true);
       }
+      const serverOrigin = `http://${bindHost}:${PORT}`;
+      if (origin === serverOrigin) {
+        return callback(null, true);
+      }
       if (corsOrigins.includes(origin)) {
         return callback(null, true);
       }

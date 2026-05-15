@@ -188,7 +188,7 @@ function OrderPage({
     { title: '订单号', dataIndex: 'orderNo', key: 'orderNo', width: 150 },
     { title: partnerLabel, dataIndex: partnerField, key: partnerField, width: 160 },
     {
-      title: '商品明细', key: 'items',
+      title: '商品明细', key: 'items', width: 200, ellipsis: true,
       render: (_, record) => {
         const items = Array.isArray(record.items) ? record.items : [];
         return items.length === 0 ? '-' : items.map((item) => `${item.productName} x ${item.quantity}`).join('；');
@@ -218,7 +218,7 @@ function OrderPage({
           <Button icon={<ReloadOutlined />} onClick={loadAll} loading={loading}>刷新</Button>
         </Space>
       } />
-      {error ? <Alert type="error" showIcon message={error} style={{ marginBottom: 16 }} /> : null}
+      {error ? <Alert type="error" showIcon message={error} style={{ marginBottom: 16 }} action={<Button size="small" onClick={loadAll}>重试</Button>} /> : null}
       <Card className="surface-card">
         <div className="table-toolbar">
           <Input.Search allowClear placeholder={searchPlaceholder} value={keyword}
@@ -226,12 +226,13 @@ function OrderPage({
           <Tag color="processing">当前记录 {filteredOrders.length} 条</Tag>
         </div>
         <Table rowKey="id" columns={columns} dataSource={filteredOrders} loading={loading}
-          pagination={{ pageSize: 8 }} scroll={{ x: 980 }}
+          pagination={{ pageSize: 8 }} scroll={{ x: 860 }}
           locale={{ emptyText: `暂无${title}，请点击"${createBtnText}"` }} />
       </Card>
 
       <Modal title={editingRecord ? `编辑${title}` : `新增${title}`} open={modalOpen}
-        onCancel={() => setModalOpen(false)} onOk={handleSubmit} confirmLoading={submitting} width={860} destroyOnClose>
+        onCancel={() => setModalOpen(false)} onOk={handleSubmit} confirmLoading={submitting}
+        width={{ xs: '95%', sm: 680, md: 820, lg: 860 }} destroyOnClose>
         <Form form={form} layout="vertical">
           <Space size={12} style={{ width: '100%' }} align="start">
             <Form.Item label="订单号" name="orderNo" style={{ flex: 1 }} rules={[{ required: true, message: '请输入订单号' }]}>

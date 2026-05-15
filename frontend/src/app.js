@@ -26,6 +26,7 @@ const System = lazy(() => import('./pages/System'));
 const Diagnostics = lazy(() => import('./pages/Diagnostics'));
 const Data = lazy(() => import('./pages/Data'));
 const PrintView = lazy(() => import('./pages/PrintView'));
+const Warehouses = lazy(() => import('./pages/Warehouses'));
 const AIAnalysis = lazy(() => import('./pages/AIAnalysis'));
 
 function AppContent() {
@@ -147,37 +148,107 @@ function AppContent() {
 
   const lightThemeConfig = {
     token: {
-      colorPrimary: '#2f7af8',
-      colorInfo: '#26a69a',
-      borderRadius: 16,
-      colorBgLayout: '#eef4fb',
+      colorPrimary: '#4f46e5',
+      colorInfo: '#0d9488',
+      colorSuccess: '#059669',
+      colorWarning: '#d97706',
+      colorError: '#e11d48',
+      borderRadius: 10,
+      borderRadiusLG: 14,
+      colorBgLayout: '#f3f2ef',
       colorBgContainer: '#ffffff',
-      colorText: '#18243d',
+      colorBgElevated: '#ffffff',
+      colorText: '#1b1b22',
+      colorTextSecondary: '#6b6b75',
+      colorTextTertiary: '#94949e',
+      colorBorder: '#e6e4df',
+      colorBorderSecondary: '#d4d2cc',
+      fontFamily: '"Inter", "SF Pro Display", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif',
+      fontSize: 14,
+      lineHeight: 1.5,
+      controlHeight: 38,
+      paddingContentHorizontal: 20,
+      paddingContentVertical: 16,
     },
     components: {
-      Card: { borderRadiusLG: 20 },
-      Table: { headerBg: '#f2f6ff' },
-      Button: { controlHeight: 40 },
+      Card: {
+        borderRadiusLG: 16,
+        paddingLG: 24,
+      },
+      Table: {
+        headerBg: '#f7f6f3',
+        headerColor: '#6b6b75',
+        rowHoverBg: 'rgba(79, 70, 229, 0.03)',
+        borderColor: '#e6e4df',
+      },
+      Button: {
+        controlHeight: 38,
+        borderRadius: 8,
+        primaryShadow: '0 2px 8px rgba(79, 70, 229, 0.25)',
+      },
+      Menu: {
+        itemBorderRadius: 8,
+        itemMarginInline: 8,
+        itemHeight: 40,
+      },
+      Input: {
+        borderRadius: 8,
+        controlHeight: 38,
+      },
+      Tag: {
+        borderRadiusSM: 6,
+      },
     },
   };
 
   const darkThemeConfig = {
     token: {
-      colorPrimary: '#4d8fff',
-      colorInfo: '#3dc9b6',
-      borderRadius: 16,
-      colorBgLayout: '#0d1b2a',
-      colorBgContainer: '#162d45',
-      colorBgElevated: '#1c3552',
-      colorText: '#e0e8f0',
-      colorTextSecondary: '#8b9bb5',
-      colorBorder: '#1e3750',
-      colorBorderSecondary: '#162d45',
+      colorPrimary: '#818cf8',
+      colorInfo: '#2dd4bf',
+      colorSuccess: '#34d399',
+      colorWarning: '#fbbf24',
+      colorError: '#fb7185',
+      borderRadius: 10,
+      borderRadiusLG: 14,
+      colorBgLayout: '#161618',
+      colorBgContainer: '#1f1f22',
+      colorBgElevated: '#28282c',
+      colorText: '#ededf0',
+      colorTextSecondary: '#8e8e96',
+      colorTextTertiary: '#5e5e66',
+      colorBorder: '#2c2c30',
+      colorBorderSecondary: '#34343a',
+      fontSize: 14,
+      lineHeight: 1.5,
+      controlHeight: 38,
+      paddingContentHorizontal: 20,
+      paddingContentVertical: 16,
     },
     components: {
-      Card: { borderRadiusLG: 20 },
-      Table: { headerBg: '#1a3050' },
-      Button: { controlHeight: 40 },
+      Card: {
+        borderRadiusLG: 16,
+        paddingLG: 24,
+      },
+      Table: {
+        headerBg: '#1a1a1d',
+        headerColor: '#8e8e96',
+        rowHoverBg: 'rgba(129, 140, 248, 0.05)',
+        borderColor: '#2c2c30',
+      },
+      Button: {
+        controlHeight: 38,
+        borderRadius: 8,
+        primaryShadow: '0 2px 8px rgba(129, 140, 248, 0.2)',
+      },
+      Menu: {
+        itemBorderRadius: 8,
+        itemMarginInline: 8,
+        itemHeight: 40,
+      },
+      Input: {
+        borderRadius: 8,
+        controlHeight: 38,
+      },
     },
   };
 
@@ -253,6 +324,7 @@ function AppContent() {
                       <Route path="/suppliers" element={<Suppliers />} />
                       <Route path="/purchase" element={<Purchase />} />
                       <Route path="/inventory" element={<Inventory />} />
+                      <Route path="/warehouses" element={<Warehouses />} />
                       <Route path="/finance" element={<Finance />} />
                       <Route path="/reports" element={<Reports />} />
                       <Route
@@ -287,7 +359,7 @@ function AppContent() {
                   okButtonProps={{ loading: changingPassword }}
                   onOk={handleForceChangePassword}
                 >
-                  <p style={{ marginBottom: 12, color: '#5d6992' }}>
+                  <p style={{ marginBottom: 12, color: 'var(--text-secondary, #6b6b75)' }}>
                     为保证数据安全，默认密码账户必须先改密后再继续使用系统。
                   </p>
                   {forceChangeError ? (

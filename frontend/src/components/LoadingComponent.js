@@ -12,10 +12,10 @@ function LoadingComponent({ text = '正在加载...' }) {
       flexDirection: 'column'
     }}>
       <Spin
-        indicator={<LoadingOutlined style={{ fontSize: 48, color: '#1890ff' }} spin />}
+        indicator={<LoadingOutlined style={{ fontSize: 48, color: 'var(--brand, #4f46e5)' }} spin />}
         size="large"
       />
-      <div style={{ marginTop: 24, fontSize: 16, color: '#666' }}>
+      <div style={{ marginTop: 24, fontSize: 16, color: 'var(--text-secondary, #6b6b75)' }}>
         {text}
       </div>
     </div>

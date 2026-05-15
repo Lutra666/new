@@ -36,14 +36,15 @@ function Reports() {
         <Table
           rowKey="id"
           columns={[
-            { title: '商品', dataIndex: 'name', key: 'name' },
-            { title: '分类', dataIndex: 'category', key: 'category' },
-            { title: '价格', dataIndex: 'price', key: 'price' },
-            { title: '库存', dataIndex: 'stock', key: 'stock' },
+            { title: '商品', dataIndex: 'name', key: 'name', ellipsis: true },
+            { title: '分类', dataIndex: 'category', key: 'category', width: 100 },
+            { title: '价格', dataIndex: 'price', key: 'price', width: 100 },
+            { title: '库存', dataIndex: 'stock', key: 'stock', width: 80 },
           ]}
           dataSource={state.data?.topProducts || []}
           pagination={false}
           loading={state.loading}
+          scroll={{ x: 500 }}
         />
       </Card>
     </>

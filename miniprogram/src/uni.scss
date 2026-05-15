@@ -1,0 +1,190 @@
+@import 'uview-plus/theme.scss';
+
+/* 主题色变量 */
+$primary-color: #2f7af8;
+$primary-light: #4d8fff;
+$success-color: #26a69a;
+$warning-color: #f5a623;
+$danger-color: #e74c3c;
+
+$text-color: #18243d;
+$text-secondary: #8b9bb5;
+$bg-color: #eef4fb;
+$bg-white: #ffffff;
+$border-color: #e0e6ed;
+
+$border-radius-sm: 8px;
+$border-radius-md: 12px;
+$border-radius-lg: 16px;
+$border-radius-xl: 20px;
+
+$font-size-xs: 22rpx;
+$font-size-sm: 24rpx;
+$font-size-md: 28rpx;
+$font-size-lg: 32rpx;
+$font-size-xl: 36rpx;
+$font-size-xxl: 44rpx;
+
+$spacing-xs: 8rpx;
+$spacing-sm: 16rpx;
+$spacing-md: 24rpx;
+$spacing-lg: 32rpx;
+$spacing-xl: 48rpx;
+
+/* 全局样式 */
+page {
+  background-color: $bg-color;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+  font-size: $font-size-md;
+  color: $text-color;
+  line-height: 1.5;
+}
+
+/* uView Plus 主题覆盖 */
+:root {
+  --up-primary: #2f7af8;
+  --up-success: #26a69a;
+  --up-warning: #f5a623;
+  --up-error: #e74c3c;
+  --up-info: #8b9bb5;
+}
+
+/* 暗色模式 */
+page[data-theme='dark'] {
+  --bg-color: #0d1b2a;
+  --text-color: #e0e8f0;
+  --text-secondary: #8b9bb5;
+  --card-bg: #162d45;
+  --border-color: #1e3a5f;
+  background-color: #0d1b2a;
+  color: #e0e8f0;
+}
+
+page[data-theme='dark'] .list-card,
+page[data-theme='dark'] .stat-card,
+page[data-theme='dark'] .login-card,
+page[data-theme='dark'] .detail-card,
+page[data-theme='dark'] .form-card,
+page[data-theme='dark'] .surface-card {
+  background: #162d45 !important;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.3) !important;
+}
+
+page[data-theme='dark'] .amount,
+page[data-theme='dark'] .stat-value,
+page[data-theme='dark'] .product-name,
+page[data-theme='dark'] .order-no,
+page[data-theme='dark'] .inv-name,
+page[data-theme='dark'] .popup-item-label,
+page[data-theme='dark'] .detail-name,
+page[data-theme='dark'] .card-title,
+page[data-theme='dark'] .section-title,
+page[data-theme='dark'] .editor-title,
+page[data-theme='dark'] .form-label,
+page[data-theme='dark'] .info-value {
+  color: #e0e8f0 !important;
+}
+
+page[data-theme='dark'] .search-header,
+page[data-theme='dark'] .tab-bar {
+  background: #162d45 !important;
+}
+
+page[data-theme='dark'] .login-title {
+  color: #e0e8f0 !important;
+}
+
+page[data-theme='dark'] .stat-primary,
+page[data-theme='dark'] .stat-success,
+page[data-theme='dark'] .stat-warning,
+page[data-theme='dark'] .stat-danger,
+page[data-theme='dark'] .stat-info {
+  background: #162d45 !important;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.3) !important;
+}
+
+page[data-theme='dark'] .dash-banner {
+  background: linear-gradient(135deg, #1a3a6e, #2d2466) !important;
+  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.4) !important;
+}
+
+page[data-theme='dark'] .page-title {
+  color: #e0e8f0 !important;
+}
+
+page[data-theme='dark'] .skeleton-card {
+  background: #162d45 !important;
+}
+
+page[data-theme='dark'] .skeleton-line {
+  background: linear-gradient(90deg, #1a3050 25%, #203858 50%, #1a3050 75%) !important;
+  background-size: 200% 100% !important;
+}
+
+page[data-theme='dark'] .empty-wrap text {
+  color: #8b9bb5 !important;
+}
+
+page[data-theme='dark'] .bottom-bar {
+  background: #162d45 !important;
+  box-shadow: 0 -2rpx 12rpx rgba(0,0,0,0.3) !important;
+}
+
+page[data-theme='dark'] .tx-meta text,
+page[data-theme='dark'] .product-meta,
+page[data-theme='dark'] .meta-stock,
+page[data-theme='dark'] .sku,
+page[data-theme='dark'] .warehouse,
+page[data-theme='dark'] .tx-date,
+page[data-theme='dark'] .tx-party,
+page[data-theme='dark'] .order-party,
+page[data-theme='dark'] .order-date,
+page[data-theme='dark'] .order-items,
+page[data-theme='dark'] .inv-meta text {
+  color: #7090a8 !important;
+}
+
+page[data-theme='dark'] .login-page {
+  background: linear-gradient(135deg, #0d1b2a 0%, #132238 100%) !important;
+}
+
+page[data-theme='dark'] .fab {
+  box-shadow: 0 8rpx 24rpx rgba(47, 122, 248, 0.25) !important;
+}
+
+/* 工具类 */
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-wrap { display: flex; flex-wrap: wrap; }
+.text-ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.text-secondary { color: $text-secondary; }
+.text-primary { color: $primary-color; }
+.text-success { color: $success-color; }
+.text-danger { color: $danger-color; }
+.text-warning { color: $warning-color; }
+.mt-sm { margin-top: $spacing-sm; }
+.mt-md { margin-top: $spacing-md; }
+.mt-lg { margin-top: $spacing-lg; }
+.mb-sm { margin-bottom: $spacing-sm; }
+.mb-md { margin-bottom: $spacing-md; }
+.mb-lg { margin-bottom: $spacing-lg; }
+.p-sm { padding: $spacing-sm; }
+.p-md { padding: $spacing-md; }
+.p-lg { padding: $spacing-lg; }
+.radius-md { border-radius: $border-radius-md; }
+.radius-lg { border-radius: $border-radius-lg; }
+
+/* 卡片容器 */
+.surface-card {
+  background: $bg-white;
+  border-radius: $border-radius-lg;
+  padding: $spacing-md;
+  margin: $spacing-sm $spacing-md;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+}
+
+/* 安全区域适配 */
+.safe-bottom {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}

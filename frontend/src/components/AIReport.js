@@ -65,7 +65,7 @@ function AIReport() {
               hoverable
               style={{
                 cursor: 'pointer',
-                border: reportType === rt.value ? '2px solid #2f7af8' : undefined,
+                border: reportType === rt.value ? '2px solid var(--brand, #4f46e5)' : undefined,
                 marginBottom: 8,
               }}
               onClick={() => setReportType(rt.value)}

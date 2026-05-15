@@ -44,6 +44,7 @@ function Dashboard() {
           <Card title="近期开票/收付流水" loading={state.loading} className="surface-card">
             <List
               dataSource={transactions}
+              locale={{ emptyText: '暂无收付流水，完成销售或采购后自动生成' }}
               renderItem={(item) => (
                 <List.Item>
                   <List.Item.Meta title={item.title} description={`${item.counterparty} · ${item.date}`} />

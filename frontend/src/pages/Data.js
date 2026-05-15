@@ -97,6 +97,7 @@ export default function Data({ developerMode = false }) {
         title: '路径',
         dataIndex: 'path',
         key: 'path',
+        ellipsis: true,
       },
     ];
 

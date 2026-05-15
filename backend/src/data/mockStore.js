@@ -328,15 +328,50 @@ const addFinanceTransaction = (type, payload) => {
 
 // ---- 报表 ----
 
-const getReportSummary = () => ({
-  cards: [
-    { key: 'sales', title: '累计销售额', value: toCurrencyText(sumBy(state.sales, 'amount')), trend: 'N/A' },
-    { key: 'profit', title: '累计利润', value: toCurrencyText(getFinanceSummary().monthlyProfit), trend: 'N/A' },
-    { key: 'stock', title: '库存件数', value: toCurrencyText(sumBy(state.inventory, 'quantity')), trend: 'N/A' },
-    { key: 'customers', title: '客户总数', value: toCurrencyText(state.customers.length), trend: 'N/A' },
-  ],
-  topProducts: clone(state.products).slice(0, 3),
-});
+const getReportSummary = () => {
+  const completedSales = state.sales.filter((s) => s.status === '已完成').length;
+  const totalSales = state.sales.length;
+  const receivedAmount = sumBy(
+    state.financeTransactions.filter((t) => t.type === 'received'),
+    'amount'
+  );
+  const paidAmount = sumBy(
+    state.financeTransactions.filter((t) => t.type === 'paid'),
+    'amount'
+  );
+  const totalStock = sumBy(state.inventory, 'quantity');
+  const aLevelCustomers = state.customers.filter((c) => c.level === 'A').length;
+
+  return {
+    cards: [
+      {
+        key: 'sales',
+        title: '累计销售额',
+        value: toCurrencyText(sumBy(state.sales, 'amount')),
+        trend: `${totalSales} 笔订单 · ${completedSales} 笔已完成`,
+      },
+      {
+        key: 'profit',
+        title: '累计利润',
+        value: toCurrencyText(getFinanceSummary().monthlyProfit),
+        trend: `收 ${toCurrencyText(receivedAmount)} · 支 ${toCurrencyText(paidAmount)}`,
+      },
+      {
+        key: 'stock',
+        title: '库存件数',
+        value: String(totalStock),
+        trend: `${state.products.length} 种商品`,
+      },
+      {
+        key: 'customers',
+        title: '客户总数',
+        value: String(state.customers.length),
+        trend: `${aLevelCustomers} 家A级客户`,
+      },
+    ],
+    topProducts: clone(state.products).slice(0, 5),
+  };
+};
 
 // ---- 系统 ----
 

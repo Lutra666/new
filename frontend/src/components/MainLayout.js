@@ -7,6 +7,7 @@ import {
   SunOutlined,
   DashboardOutlined,
   DatabaseOutlined,
+  HomeOutlined,
   FileTextOutlined,
   LogoutOutlined,
   MoneyCollectOutlined,
@@ -34,6 +35,7 @@ const menuItems = [
   { key: '/suppliers', icon: <ShopOutlined />, label: '供应商' },
   { key: '/purchase', icon: <WalletOutlined />, label: '采购管理' },
   { key: '/inventory', icon: <DatabaseOutlined />, label: '库存中心' },
+  { key: '/warehouses', icon: <HomeOutlined />, label: '仓库管理' },
   { key: '/finance', icon: <MoneyCollectOutlined />, label: '财务中心' },
   { key: '/reports', icon: <BarChartOutlined />, label: '报表中心' },
   { key: '/ai-analysis', icon: <BulbOutlined />, label: 'AI智能分析' },
@@ -81,12 +83,12 @@ function MainLayout({ children, user, onLogout, developerMode = false, darkMode 
   return (
     <Layout className="main-shell">
       <Sider
-        width={240}
+        width={220}
         theme="light"
         className="main-sider"
         collapsible
         breakpoint="lg"
-        collapsedWidth={72}
+        collapsedWidth={64}
         collapsed={collapsed}
         onCollapse={setCollapsed}
       >
@@ -116,7 +118,7 @@ function MainLayout({ children, user, onLogout, developerMode = false, darkMode 
               onClick={() => setCollapsed((prev) => !prev)}
             />
             <Space direction="vertical" size={0}>
-              <Text strong>欢迎回来，{user?.username || '管理员'}</Text>
+              <Text strong style={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>欢迎回来，{user?.username || '管理员'}</Text>
               <Space size={8} wrap>
                 <Tag color="blue">正式版</Tag>
                 <Tag color="cyan">数据持久化</Tag>
@@ -140,7 +142,7 @@ function MainLayout({ children, user, onLogout, developerMode = false, darkMode 
             <Dropdown menu={{ items: dropdownItems }} placement="bottomRight">
               <Space style={{ cursor: 'pointer' }}>
                 <Avatar icon={<UserOutlined />} />
-                <Text className="main-user-name">{user?.username || '管理员'}</Text>
+                <Text className="main-user-name" title={user?.username || '管理员'}>{user?.username || '管理员'}</Text>
               </Space>
             </Dropdown>
           </Space>

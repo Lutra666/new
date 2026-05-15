@@ -99,7 +99,7 @@ function AIAnomalies() {
                   title="发现异常"
                   value={result.anomalies?.length || 0}
                   suffix="个"
-                  valueStyle={{ color: highCount > 0 ? '#cf1322' : mediumCount > 0 ? '#d46b08' : '#1677ff' }}
+                  valueStyle={{ color: highCount > 0 ? 'var(--accent-rose, #e11d48)' : mediumCount > 0 ? 'var(--accent-orange, #d97706)' : 'var(--brand, #4f46e5)' }}
                 />
               </Col>
             </Row>
